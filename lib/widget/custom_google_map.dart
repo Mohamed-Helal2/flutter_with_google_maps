@@ -1,6 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_map/models/place_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'dart:ui' as ui;
 
 class CustomGoogleMap extends StatefulWidget {
   const CustomGoogleMap({super.key});
@@ -29,22 +33,39 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
     super.dispose();
   }
 
-  void initmarker() {
+  Future<Uint8List> getimagefromRowdata(String image, int width) async {
+    var imagedata = await rootBundle.load(image);
+    var imagecode = await ui.instantiateImageCodec(
+        imagedata.buffer.asUint8List(),
+        targetWidth: width);
+    var imageframe = await imagecode.getNextFrame();
+    var imagebytedata =
+        await imageframe.image.toByteData(format: ui.ImageByteFormat.png);
+    return imagebytedata!.buffer.asUint8List();
+  }
+
+  void initmarker() async {
+    var customMarkerIcon =
+        // await BitmapDescriptor.bytes(
+        //     await getimagefromRowdata('assets/images/qq.jpg', 40));
+        await BitmapDescriptor.asset(
+            const ImageConfiguration(), 'assets/images/test1.png');
     var mymarker = places
         .map(
           (e) => Marker(
-            infoWindow: InfoWindow(
-              title: e.name,
-              onTap: () {
-                print("-------- ${e.name} + ${e.id}");
-              },
-            ),
-            markerId: MarkerId(e.id.toString()),
-            position: e.latLng,
-          ),
+              infoWindow: InfoWindow(
+                title: e.name,
+                onTap: () {
+                  print("-------- ${e.name} + ${e.id}");
+                },
+              ),
+              markerId: MarkerId(e.id.toString()),
+              position: e.latLng,
+              icon: customMarkerIcon),
         )
         .toSet();
     marker.addAll(mymarker);
+    setState(() {});
     // var mymarker = const Marker(
     //     markerId: MarkerId('11'),
     //     position: LatLng(31.189849301005083, 29.976243682347217));
@@ -64,6 +85,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
     return Stack(
       children: [
         GoogleMap(
+          zoomControlsEnabled: false,
           // style: mapStyle,
           markers: marker,
           //  mapType: MapType.normal,
@@ -83,8 +105,8 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
           child: ElevatedButton(
             onPressed: () {
               CameraPosition newlocation = const CameraPosition(
-                  target: LatLng(30.04510690911965, 31.23664484086507),
-                  zoom: 11);
+                  target: LatLng(31.213520383783354, 29.933308933095795),
+                  zoom: 16);
               googleMapController
                   .animateCamera(CameraUpdate.newCameraPosition(newlocation));
             },
