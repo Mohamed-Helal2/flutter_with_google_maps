@@ -10,20 +10,29 @@ class CustomGoogleMap extends StatefulWidget {
 
 class _CustomGoogleMapState extends State<CustomGoogleMap> {
   late CameraPosition initialCameraPosition;
-
+  String? mapStyle;
+  late GoogleMapController googleMapController;
+  Set<Marker> marker = {};
   @override
   void initState() {
     initialCameraPosition = const CameraPosition(
         zoom: 10, target: LatLng(31.20521120591691, 29.930664876455566));
-    initMapStyle();
+    //  initMapStyle();
+    initmarker();
     super.initState();
   }
 
-  String? mapStyle;
   @override
   void dispose() {
     googleMapController.dispose();
     super.dispose();
+  }
+
+  void initmarker() {
+    var mymarker = const Marker(
+        markerId: MarkerId('11'),
+        position: LatLng(31.189849301005083, 29.976243682347217));
+    marker.add(mymarker);
   }
 
   Future<void> initMapStyle() async {
@@ -34,13 +43,13 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
     });
   }
 
-  late GoogleMapController googleMapController;
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         GoogleMap(
-          style: mapStyle,
+          // style: mapStyle,
+          markers: marker,
           //  mapType: MapType.normal,
           onMapCreated: (controller) {
             googleMapController = controller;
