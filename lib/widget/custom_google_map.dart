@@ -17,7 +17,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
   @override
   void initState() {
     initialCameraPosition = const CameraPosition(
-        zoom: 10, target: LatLng(31.20521120591691, 29.930664876455566));
+        zoom: 12, target: LatLng(31.20521120591691, 29.930664876455566));
     //  initMapStyle();
     initmarker();
     super.initState();
@@ -33,6 +33,12 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
     var mymarker = places
         .map(
           (e) => Marker(
+            infoWindow: InfoWindow(
+              title: e.name,
+              onTap: () {
+                print("-------- ${e.name} + ${e.id}");
+              },
+            ),
             markerId: MarkerId(e.id.toString()),
             position: e.latLng,
           ),
