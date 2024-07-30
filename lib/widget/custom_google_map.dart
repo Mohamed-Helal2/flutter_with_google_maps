@@ -3,6 +3,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_map/models/place_model.dart';
+import 'package:google_map/models/polyLine_model.dart';
+import 'package:google_map/models/polygones_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:ui' as ui;
 
@@ -18,12 +20,16 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
   String? mapStyle;
   late GoogleMapController googleMapController;
   Set<Marker> marker = {};
+  Set<Polyline> polylines = {};
+  Set<Polygon> polygones = {};
   @override
   void initState() {
     initialCameraPosition = const CameraPosition(
-        zoom: 12, target: LatLng(31.20521120591691, 29.930664876455566));
+        zoom: 11.9, target: LatLng(31.20521120591691, 29.930664876455566));
     //  initMapStyle();
     initmarker();
+    initpolylines();
+    initpolygones();
     super.initState();
   }
 
@@ -72,6 +78,38 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
     // marker.add(mymarker);
   }
 
+  void initpolylines() {
+    var myplylines = polylines1
+        .map(
+          (e) => Polyline(
+              polylineId: e.id,
+              points: e.points,
+              color: e.color,
+              geodesic: e.geodesic!,
+              width: e.width,
+              zIndex: e.zindex,
+              startCap: e.startCap),
+        )
+        .toSet();
+    polylines.addAll(myplylines);
+    setState(() {});
+  }
+
+  void initpolygones() {
+    var mypolygones = polygoneslist
+        .map(
+          (e) => Polygon(polygonId: e.polygoneid, points: e.points,
+          fillColor: e.color!,
+          strokeColor: e.strokeColor!,
+          strokeWidth: e.strokewidth!,
+          geodesic: true
+          ),
+        )
+        .toSet();
+    polygones.addAll(mypolygones);
+    setState(() {});
+  }
+
   Future<void> initMapStyle() async {
     String nightStyle = await DefaultAssetBundle.of(context)
         .loadString('assets/map_style/night.json');
@@ -85,6 +123,8 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
     return Stack(
       children: [
         GoogleMap(
+          polygons: polygones,
+          polylines: polylines,
           zoomControlsEnabled: false,
           // style: mapStyle,
           markers: marker,
