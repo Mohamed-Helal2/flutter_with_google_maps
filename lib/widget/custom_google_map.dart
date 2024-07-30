@@ -25,7 +25,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
   @override
   void initState() {
     initialCameraPosition = const CameraPosition(
-        zoom: 11.9, target: LatLng(31.20521120591691, 29.930664876455566));
+        zoom: 5.2, target: LatLng(31.20521120591691, 29.930664876455566));
     //  initMapStyle();
     initmarker();
     initpolylines();
@@ -102,7 +102,8 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
           fillColor: e.color!,
           strokeColor: e.strokeColor!,
           strokeWidth: e.strokewidth!,
-          geodesic: true
+          geodesic: true,
+          holes:e.holes??[], 
           ),
         )
         .toSet();
