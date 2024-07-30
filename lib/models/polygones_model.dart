@@ -30,7 +30,7 @@ List<PolygonesModel> polygoneslist = [
         const LatLng(30.845497289576752, 29.0213800471798),
         const LatLng(31.410834166353588, 27.21726536218976),
       ],
-      color: Color.fromARGB(255, 247, 15, 50).withOpacity(0.399),
+      color:const Color.fromARGB(255, 247, 15, 50).withOpacity(0.10),
       holes: [
         [
           const LatLng(31.308099230837332, 32.28310681438828),

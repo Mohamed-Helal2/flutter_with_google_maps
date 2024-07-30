@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_map/models/circle_model.dart';
 import 'package:google_map/models/place_model.dart';
 import 'package:google_map/models/polyLine_model.dart';
 import 'package:google_map/models/polygones_model.dart';
@@ -22,6 +23,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
   Set<Marker> marker = {};
   Set<Polyline> polylines = {};
   Set<Polygon> polygones = {};
+  Set<Circle> circles = {};
   @override
   void initState() {
     initialCameraPosition = const CameraPosition(
@@ -30,6 +32,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
     initmarker();
     initpolylines();
     initpolygones();
+    initcircles();
     super.initState();
   }
 
@@ -98,16 +101,44 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
   void initpolygones() {
     var mypolygones = polygoneslist
         .map(
-          (e) => Polygon(polygonId: e.polygoneid, points: e.points,
-          fillColor: e.color!,
-          strokeColor: e.strokeColor!,
-          strokeWidth: e.strokewidth!,
-          geodesic: true,
-          holes:e.holes??[], 
+          (e) => Polygon(
+            polygonId: e.polygoneid,
+            points: e.points,
+            fillColor: e.color!,
+            strokeColor: e.strokeColor!,
+            strokeWidth: e.strokewidth!,
+            geodesic: true,
+            holes: e.holes ?? [],
           ),
         )
         .toSet();
     polygones.addAll(mypolygones);
+    setState(() {});
+  }
+
+  void initcircles() {
+    // Circle mycircle = 
+    // Circle(
+    //     circleId: CircleId('6'),
+    //     radius: 100000,
+    //     center: LatLng(
+    //       30.72199112628477,
+    //       31.255218023376088,
+    //     ),
+    //     fillColor: Colors.yellow);
+    var mycircle = circleslist
+        .map(
+          (e) => Circle(
+              circleId: e.circleId,
+              fillColor: e.fillcolr!,
+              strokeColor: e.strokecolor!,
+              strokeWidth: e.strokewidth!,
+              center: e.centre,
+              radius: e.radius
+              ),
+        )
+        .toSet();
+    circles.addAll(mycircle);
     setState(() {});
   }
 
@@ -124,6 +155,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
     return Stack(
       children: [
         GoogleMap(
+          circles: circles,
           polygons: polygones,
           polylines: polylines,
           zoomControlsEnabled: false,
@@ -146,7 +178,7 @@ class _CustomGoogleMapState extends State<CustomGoogleMap> {
           child: ElevatedButton(
             onPressed: () {
               CameraPosition newlocation = const CameraPosition(
-                  target: LatLng(31.213520383783354, 29.933308933095795),
+                  target: LatLng(30.72199112628477, 31.255218023376088),
                   zoom: 16);
               googleMapController
                   .animateCamera(CameraUpdate.newCameraPosition(newlocation));
